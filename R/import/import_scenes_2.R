@@ -48,17 +48,25 @@ buildCharNetwork <- function(sceneCharacters){
 }
 
 
-# arquivo de episodios
-eps_json <- fromJSON("./data/episodes.json")
+# importa e trata os dados dos episodios
 
-# adiciona alguns contadores e seleciona campos de interesse
-eps <- eps_json$episodes %>% 
-  as.tibble() %>%
-  select(-episodeLink, -episodeAirDate, -episodeDescription, -openingSequenceLocations) %>% 
-  add_count(seasonNum, name="episodesCount") %>% 
-  mutate( scenesCount = map_int(scenes, nrow) ) %>% 
-  filter( scenesCount>0 ) %>%
-  mutate( scenes = map(scenes, processSceneCharacters) )
+importEpisodes <- function(filename = "./data/episodes.json"){
+
+  # arquivo de episodios
+  eps_json <- fromJSON(filename)
+  
+  # adiciona alguns contadores e seleciona campos de interesse
+  eps <- eps_json$episodes %>% 
+    as.tibble() %>%
+    select(-episodeLink, -episodeAirDate, -episodeDescription, -openingSequenceLocations) %>% 
+    add_count(seasonNum, name="episodesCount") %>% 
+    mutate( scenesCount = map_int(scenes, nrow) ) %>% 
+    filter( scenesCount>0 ) %>%
+    mutate( scenes = map(scenes, processSceneCharacters) )
+  
+  return(eps)  
+}
+
 
 # retorna a rede de characters de uma cena de um episodio e uma temporada
 getSceneCharNetwork <- function(.episodes, .season, .episode, .scene) {
