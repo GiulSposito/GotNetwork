@@ -1,8 +1,6 @@
 library(tidyverse)
 library(jsonlite)
-library(tidygraph)
-library(igraph)
-library(ggraph)
+
 
 # funcao que processa os personagens de cada cena
 processSceneCharacters <- function(listOfScenes){
@@ -57,7 +55,7 @@ importEpisodes <- function(filename = "./data/episodes.json"){
   
   # adiciona alguns contadores e seleciona campos de interesse
   eps <- eps_json$episodes %>% 
-    as.tibble() %>%
+    as_tibble() %>%
     select(-episodeLink, -episodeAirDate, -episodeDescription, -openingSequenceLocations) %>% 
     add_count(seasonNum, name="episodesCount") %>% 
     mutate( scenesCount = map_int(scenes, nrow) ) %>% 
