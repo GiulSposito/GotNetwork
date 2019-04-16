@@ -60,6 +60,27 @@ eps <- eps_json$episodes %>%
   filter( scenesCount>0 ) %>%
   mutate( scenes = map(scenes, processSceneCharacters) )
 
+# retorna a rede de characters de uma cena de um episodio e uma temporada
+getSceneCharNetwork <- function(.episodes, .season, .episode, .scene) {
+  .episodes %>% 
+    filter(
+      seasonNum  == .season, 
+      episodeNum == .episode
+    ) -> episode
+  
+  cena <- episode$scenes[[1]]
+  
+  cena[.scene,]$charNetwork[[1]] %>% 
+    return()
+}
+
+getSceneCharNetwork(eps,6,3,1)
+
+
+.episodes <- eps
+.season <- 1
+.episode <- 5
+.scene <- 10
 
 # fixando o layout previamente para todos os plots terem a mesma disposicao
 g_layout <- create_layout(g, layout = "kk")
