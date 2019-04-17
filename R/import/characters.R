@@ -17,6 +17,7 @@ importCharacters <- function(filename="./data/characters.json"){
       })
     ) %>% 
     select( characterName, houseName ) %>% 
+    mutate( houseName = ifelse(is.na(houseName), "none", houseName)) %>% 
     mutate( houseName = as.factor(houseName) ) %>% 
     arrange(characterName) %>% 
     set_names(c("name","house")) %>% 
