@@ -19,7 +19,9 @@ scenes %>%
 scenes$sceneSequence
 
 # fixando o layout previamente para todos os plots terem a mesma disposicao
-composeNetwork(760, 100, 2, scenes, gotCharacters)
-
-%>% 
+composeNetwork(300, 100, 2, scenes, gotCharacters) %>% 
   plotNetwork(gotCharacters)
+
+
+scenes %>% 
+  filter(sceneSequence==300 | sceneSequence==200)
