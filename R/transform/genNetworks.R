@@ -13,15 +13,16 @@ episodes %>%
   select( seasonNum, episodeNum, sceneSequence, 
           sceneStart, charNetwork, episodeTitle ) -> scenes
 
-# extrai uma sequencia de episodios 
-# e gera um graph de ferquencia de parecimento (da aresta)
-
-scene_index <- 200
-seq_size    <- 100
-
 library(tidygraph)
 library(ggraph)
 library(igraph)
+
+
+# extrai uma sequencia de episodios 
+# e gera um graph de ferquencia de parecimento (da aresta)
+
+scene_index <- 3000
+seq_size    <- 100
 
 # gera um grafo
 scenes %>% 
@@ -45,7 +46,7 @@ g_crt <- g %>%
 g_ctr <- g_crt %>% 
   mutate(
     degree = centrality_degree(normalized = T),
-    between = centrality_betweenness(normalized = T)
+    between = centrality_betweenness(normalized = F)
   )
 
 # fixando o layout previamente para todos os plots terem a mesma disposicao
@@ -55,7 +56,10 @@ g_layout <- create_layout(g_ctr, layout = "fr")
 ggraph(g_layout) +
   geom_edge_fan(aes(alpha=weight), width=1) +
   geom_node_point(aes(size=degree, color=house), alpha=.6) +
-  geom_node_text(aes(label=name, size=degree*0.5), color="black") +
+  geom_node_text(aes(label=name, size=degree), color="black") +
   theme_void() +
+  scale_color_discrete(rainbow(18), labels=levels(gotCharacters$house)) +
   theme( legend.position = "none" )
   
+
+
