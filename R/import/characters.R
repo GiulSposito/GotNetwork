@@ -8,20 +8,19 @@ importCharacters <- function(filename="./data/characters.json"){
   
   gotChars$characters %>% 
     select(characterName, royal, houseName, characterImageThumb) %>% 
-    as.tibble() %>% 
+    as_tibble() %>% 
     mutate(
-      houseName = map(houseName, function(vct) {
-        if (is.null(vct)) return(tibble(houseName=vector("character",0)))
-        tibble(houseName=vct)
+      houseName = map_chr(houseName, function(vct) {
+        if (is.null(vct)) return(NA)
+        if(length(vct)>1) vct <- vct %>% sort() %>% paste(collapse = "-")
+        vct
       })
     ) %>% 
-    unnest() %>%
     select( characterName, houseName ) %>% 
     mutate( houseName = as.factor(houseName) ) %>% 
     arrange(characterName) %>% 
     set_names(c("name","house")) %>% 
     return()
-
 }
 
 

@@ -16,7 +16,7 @@ episodes %>%
 # extrai uma sequencia de episodios 
 # e gera um graph de ferquencia de parecimento (da aresta)
 
-scene_index <- 1000
+scene_index <- 200
 seq_size    <- 100
 
 library(tidygraph)
@@ -37,11 +37,12 @@ scenes %>%
   graph.data.frame( directed = F ) %>% 
   as_tbl_graph() -> g
 
-g %>% 
-  left_join(gotCharacters)
+g_crt <- g %>% 
+  activate(nodes) %>% 
+  left_join(gotCharacters, by="name")
 
 # calculando centralidades
-g_ctr <- g %>% 
+g_ctr <- g_crt %>% 
   mutate(
     degree = centrality_degree(normalized = T),
     between = centrality_betweenness(normalized = T)
@@ -53,7 +54,7 @@ g_layout <- create_layout(g_ctr, layout = "fr")
 # plotando o graph
 ggraph(g_layout) +
   geom_edge_fan(aes(alpha=weight), width=1) +
-  geom_node_point(aes(size=degree), color="blue", alpha=.6) +
+  geom_node_point(aes(size=degree, color=house), alpha=.6) +
   geom_node_text(aes(label=name, size=degree*0.5), color="black") +
   theme_void() +
   theme( legend.position = "none" )
