@@ -16,11 +16,14 @@ extractScenes <- function(.episodes){
 # extrai uma sequencia de episodios 
 # e gera um graph de ferquencia de parecimento (da aresta)
 composeNetwork <- function(.scene_idx, .seq_size, .presenca, .scenes, .characters) {
+  
+  # checa qual a cena
+  print(.scene_idx)
 
   # gera um grafo
   .scenes %>% 
     # pega as ultimas (.seq_size) cenas a partir da cena (.scene_idx)
-    filter( sceneSequence > max(0,.scene_idx-.seq_size),
+    filter( sceneSequence > max(1, .scene_idx-.seq_size),
             sceneSequence < .scene_idx ) %>% 
     # desaninha a tabela de arestas de personagens de cada uma delas
     # conta as aparicoes
@@ -34,7 +37,7 @@ composeNetwork <- function(.scene_idx, .seq_size, .presenca, .scenes, .character
     arrange(from, to) %>% 
     # gera a rede
     graph.data.frame( directed = F ) %>% 
-    as_tbl_graph() %>% 
+    as_tbl_graph() %>% # as_tibble() %>% left_join(.characters, by="name") %>% View()
     activate(nodes) %>% 
     # coloca a informacao de "casa" nos nodes (personagens)
     left_join(.characters, by="name") %>% 

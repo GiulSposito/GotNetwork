@@ -8,6 +8,18 @@ gotCharacters <- importCharacters("./data/characters.json")
 episodes <- importEpisodes("./data/episodes.json")
 scenes <- extractScenes(episodes)
 
+# compondo as animacoes
+scenes %>% 
+  select( -sceneStart ) %>% 
+  filter( sceneSequence >=10, sceneSequence < 1000 ) %>% 
+  mutate(
+    network = map( sceneSequence, composeNetwork, 100, 2, scenes, gotCharacters)
+  ) -> scenesNetwork
+
+scenes$sceneSequence
+
 # fixando o layout previamente para todos os plots terem a mesma disposicao
-composeNetwork(1200, 100, 5, scenes, gotCharacters) %>% 
+composeNetwork(760, 100, 2, scenes, gotCharacters)
+
+%>% 
   plotNetwork(gotCharacters)

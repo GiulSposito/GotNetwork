@@ -20,6 +20,7 @@ importCharacters <- function(filename="./data/characters.json"){
     mutate( houseName = as.factor(houseName) ) %>% 
     arrange(characterName) %>% 
     set_names(c("name","house")) %>% 
+    distinct() %>% 
     return()
 }
 
