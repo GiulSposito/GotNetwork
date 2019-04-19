@@ -24,17 +24,19 @@ saveRDS(scenesNetwork, "./data/sceneNetwork.rds")
 
 scenesIndexes <- scenesNetwork$sceneSequence
 
-
-for(.i in scenesIndexes[1:200]){
+for(.i in scenesIndexes[1:500]){
 
   # compoe o nome do arquivo de imagem
   img_name <- paste0( "./images/scene_",formatC(.i, width = 4, flag="0"), ".png" )
   
   # abre o device de imagem
-  png(img_name)
+  png(img_name, width = 1024, height = 768, units = "px")
   
   # plota
-  print(plotNetwork(scenesNetwork[.i,]$network[[1]], gotCharacters))
+  print(plotNetwork(scenesNetwork[.i,]$network[[1]], gotCharacters, 
+                    scenesNetwork[.i,]$episodeTitle,
+                    paste0("Season: ", scenesNetwork[.i,]$seasonNum,
+                           " - Episode: " , scenesNetwork[.i,]$episodeNum)))
   
   # fecha e salva imagem
   dev.off()
@@ -61,13 +63,21 @@ images_name <- scenesIndexes %>%
     return(img_name)
   }, scenesNetwork, gotCharacters)
 
+### ---- 
 
-.scns[71,]$network[[1]] %>% 
-  create_layout(layout = "gem") %>% 
+.i<-2775
+set.seed(1975)
+scenesNetwork[.i,]$network[[1]] %>% 
+  mutate(
+    nodeWeight = centrality_degree()
+  ) %>% 
+  create_layout(layout = "stress") %>% 
   ggraph(g_layout) +
   geom_edge_fan(aes(alpha=weight), width=1) +
-  geom_node_point(aes(size=degree, color=house), alpha=.6) +
-  geom_node_text(aes(label=name, size=degree), color="black") +
+  geom_node_point(aes(color=house, alpha=degree), size=6, alpha=.6) +
+  geom_node_text(aes(label=name), color="black") +
+  ggtitle(scenesNetwork[.i,]$episodeTitle,paste0("Season: ", scenesNetwork[.i,]$seasonNum,
+                 " - Episode: " , scenesNetwork[.i,]$episodeNum)) +
   theme_void() +
   scale_color_discrete(rainbow(18), labels=levels(gotCharacters$house)) +
   theme( legend.position = "none" )

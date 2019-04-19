@@ -2,6 +2,8 @@ library(tidyverse)
 library(tidygraph)
 library(ggraph)
 library(igraph)
+# layouts alternativos para ggraph
+library(graphlayouts)
 
 # pega campos que interessa e desanhinha as cenas
 extractScenes <- function(.episodes){
@@ -51,16 +53,19 @@ composeNetwork <- function(.scene_idx, .seq_size, .presenca, .scenes, .character
 
 
 # plota uma rede
-plotNetwork <- function(.sceneNetwork, .characterHouses){
+plotNetwork <- function(.sceneNetwork, .characterHouses, .epTitle="", .epSubtitle=""){
+  set.seed(1975)
   p <- .sceneNetwork %>% 
-    create_layout(layout = "fr") %>% 
+    create_layout(layout = "stress") %>% 
     ggraph(g_layout) +
     geom_edge_fan(aes(alpha=weight), width=1) +
-    geom_node_point(aes(size=degree, color=house), alpha=.6) +
-    geom_node_text(aes(label=name, size=degree), color="black") +
+    geom_node_point(aes(color=house, alpha=degree), size=6, alpha=.6) +
+    geom_node_text(aes(label=name), color="black") +
+    ggtitle(.epTitle, .epSubtitle) +
     theme_void() +
     scale_color_discrete(rainbow(18), labels=levels(.characterHouses$house)) +
-    theme( legend.position = "none" )
+    theme( legend.position = "none", 
+           title = element_text(size=18))
   
   return(p)
 }
