@@ -9,12 +9,12 @@ episodes <- importEpisodes("./data/episodes.json")
 scenes <- extractScenes(episodes)
 
 # compondo as animacoes
-scenes %>% 
+scenesNetwork <- scenes %>% 
   select( -sceneStart ) %>% 
   filter( sceneSequence >= 11 ) %>% 
   mutate(
     network = map( sceneSequence, composeNetwork, 100, 3, scenes, gotCharacters)
-  ) -> scenesNetwork
+  )
 
 saveRDS(scenesNetwork, "./data/sceneNetwork.rds")
 
@@ -40,7 +40,6 @@ for(.i in scenesIndexes[1:500]){
   
   # fecha e salva imagem
   dev.off()
-  
 }
 
 
