@@ -1,6 +1,6 @@
 library(tidyverse)
 library(jsonlite)
-
+library(lubridate)
 
 # funcao que processa os personagens de cada cena
 processSceneCharacters <- function(listOfScenes){
@@ -9,6 +9,12 @@ processSceneCharacters <- function(listOfScenes){
   listOfScenes %>% 
     as_tibble() %>% 
     mutate(
+      # calcula duracao da cena
+      sceneDuration = difftime(
+        strptime(sceneEnd, format = "%H:%M:%S"),
+        strptime(sceneStart, format = "%H:%M:%S"),
+        units = "mins"
+      ) %>% as.numeric(),
       # adiciona na scena os caracteres mapeados como um graph
       charNetwork = map(characters, buildCharNetwork)
     ) %>% 
@@ -35,7 +41,7 @@ buildCharNetwork <- function(sceneCharacters){
           sort() %>%       # e ordena
           combn(2) %>%     # combina dois a dois (arestas)
           t() %>%          # coloca de pe e transforma em um 'from'/'to'
-          as.tibble() %>% 
+          as_tibble() %>% 
           set_names(c("from","to"))
         
         return(sceneCharNetwork)

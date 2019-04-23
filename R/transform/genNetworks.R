@@ -11,7 +11,7 @@ extractScenes <- function(.episodes){
     unnest(scenes) %>% 
     mutate( sceneSequence = 1:nrow(.) ) %>% 
     select( seasonNum, episodeNum, sceneSequence, 
-            sceneStart, charNetwork, episodeTitle ) %>% 
+            sceneStart, sceneDuration, charNetwork, episodeTitle ) %>% 
     return()
 }
  
